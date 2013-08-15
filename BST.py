@@ -1,66 +1,8 @@
-import heapq as hp
 import time
-
-import unittest
-
-class TestMain(unittest.TestCase):
-    def makeTree(self):
-        self.tree=unbalancedBST(7)
-        root = self.tree.root
-        self.tree.insert(root,4)
-        self.tree.insert(root,1)
-        self.tree.insert(root,5)
-        self.tree.insert(root,8)
-        self.tree.insert(root,7.5)
+from nodes import BinaryTreeNode as Node
         
-    def testFind(self):
-        self.makeTree()
-        expected = False
-        result = self.tree.find(2)
-        self.assertEqual(expected, result)
-        
-        expected = True
-        result = self.tree.find(8)
-        self.assertEqual(expected, result)
-        
-    def testMaxMin(self):
-        self.makeTree()
-        expected = 8
-        result = self.tree.max()
-        self.assertEqual(expected, result)
-        
-        expected = 1
-        result = self.tree.min()
-        self.assertEqual(expected, result)
-        
-        expected = 5
-        result = self.tree.max(4)
-        self.assertEqual(expected, result)
-        
-        expected = 7.5
-        result = self.tree.min(8)
-        self.assertEqual(expected, result)
-        
-  
-
-class Node:
-    def __init__(self,value):
-        
-        self.value = value
-        self.leftChild = None
-        self.rightChild = None
-        self.parent = None
-        
-    def getChildren(self):
-        children = []
-        if self.leftChild != None:    
-            children.append(self.leftChild)
-        if self.rightChild != None:
-            children.append(self.rightChild)
-        return children
-        
-        
-class unbalancedBST():
+class BSTunbalanced():
+    """An instance of the BSTunbalanced contains a root of a tree"""
     def __init__(self,root=None):
         if root:
             self.root = Node(root)
@@ -103,6 +45,17 @@ class unbalancedBST():
             if node.leftChild == None:
                 return node.value
             return self.min(node.leftChild)
+            
+    def minNode(self,node=None):
+        if node:
+            if node.leftChild == None:
+                return node
+            return self.minNode(node.leftChild)
+        else:
+            node = self.root
+            if node.leftChild == None:
+                return node
+            return self.minNode(node.leftChild)
         
     def max(self,node=None):
         if node:
@@ -115,7 +68,21 @@ class unbalancedBST():
                 return node.value
             return self.max(node.rightChild)
             
+    def maxNode(self,node=None):
+        if node:
+            if node.rightChild == None:
+                return node
+            return self.maxNode(node.rightChild)
+        else:
+            node = self.root
+            if node.rightChild == None:
+                return node
+            return self.maxNode(node.rightChild)
+            
     def prior(self,node):
+        check = type(node)
+        if check==int or check==float:
+            node = self.select(node)
         if node.leftChild:
             return self.max(node.leftChild)
         parent = node.parent
@@ -123,14 +90,35 @@ class unbalancedBST():
             if parent.value < node.value:
                 return parent.value
             parent = parent.parent
+    
+    def priorNode(self,node):
+        if node.leftChild:
+            return self.maxNode(node.leftChild)
+        parent = node.parent
+        while parent:
+            if parent.value < node.value:
+                return parent
+            parent = parent.parent
             
     def next(self,node):
+        check = type(node)
+        if check==int or check==float:
+            node = self.select(node)
         if node.rightChild:
             return self.min(node.rightChild)
         parent = node.parent
         while parent:
             if parent.value > node.value:
                 return parent.value
+            parent = parent.parent
+            
+    def nextNode(self,node):
+        if node.rightChild:
+            return self.minNode(node.rightChild)
+        parent = node.parent
+        while parent:
+            if parent.value > node.value:
+                return parent
             parent = parent.parent
             
     def insert(self,root,value):
@@ -164,7 +152,7 @@ class unbalancedBST():
         
 if __name__ == "__main__":
     
-    tree=unbalancedBST(7)
+    tree=BSTunbalanced(7)
     start = time.clock()
     root = tree.root
     tree.insert(root,4)
@@ -180,14 +168,14 @@ if __name__ == "__main__":
     print 'Min node in a subtree 8: {0} (7.5)'.format(tree.min(tree.select(8)))
     print 'Max node in tree: {0} (8)'.format(tree.max())
     print 'Min node in tree: {0} (1)'.format(tree.min())
-    print 'Successor of 5: {0} (7)'.format(tree.next(tree.select(5)))
-    print 'Successor of 7: {0} (7.5)'.format(tree.next(tree.select(7)))
-    print 'Successor of 4: {0} (5)'.format(tree.next(tree.select(4)))
-    print 'Successor of 8: {0} (None)'.format(tree.next(tree.select(8)))
-    print 'Predecessor of 1: {0} (None)'.format(tree.prior(tree.select(1)))
-    print 'Predecessor of 4: {0} (1)'.format(tree.prior(tree.select(4)))
-    print 'Predecessor of 5: {0} (4)'.format(tree.prior(tree.select(5)))
-    print 'Predecessor of 7.5: {0} (7)'.format(tree.prior(tree.select(7.5)))
+    print 'Successor of 5: {0} (7)'.format(tree.next(5))
+    print 'Successor of 7: {0} (7.5)'.format(tree.next(7))
+    print 'Successor of 4: {0} (5)'.format(tree.next(4))
+    print 'Successor of 8: {0} (None)'.format(tree.next(8))
+    print 'Predecessor of 1: {0} (None)'.format(tree.prior(1))
+    print 'Predecessor of 4: {0} (1)'.format(tree.prior(4))
+    print 'Predecessor of 5: {0} (4)'.format(tree.prior(5))
+    print 'Predecessor of 7.5: {0} (7)'.format(tree.prior(7.5))
     print time.clock() - start
     print tree.max()
-    unittest.main()
+    
