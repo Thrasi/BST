@@ -1,8 +1,51 @@
 import heapq as hp
 import time
 
+import unittest
+
+class TestMain(unittest.TestCase):
+    def makeTree(self):
+        self.tree=unbalancedBST(7)
+        root = self.tree.root
+        self.tree.insert(root,4)
+        self.tree.insert(root,1)
+        self.tree.insert(root,5)
+        self.tree.insert(root,8)
+        self.tree.insert(root,7.5)
+        
+    def testFind(self):
+        self.makeTree()
+        expected = False
+        result = self.tree.find(2)
+        self.assertEqual(expected, result)
+        
+        expected = True
+        result = self.tree.find(8)
+        self.assertEqual(expected, result)
+        
+    def testMaxMin(self):
+        self.makeTree()
+        expected = 8
+        result = self.tree.max()
+        self.assertEqual(expected, result)
+        
+        expected = 1
+        result = self.tree.min()
+        self.assertEqual(expected, result)
+        
+        expected = 5
+        result = self.tree.max(4)
+        self.assertEqual(expected, result)
+        
+        expected = 7.5
+        result = self.tree.min(8)
+        self.assertEqual(expected, result)
+        
+  
+
 class Node:
     def __init__(self,value):
+        
         self.value = value
         self.leftChild = None
         self.rightChild = None
@@ -68,9 +111,9 @@ class unbalancedBST():
             return self.max(node.rightChild)
         else:
             node = self.root
-            if node.leftChild == None:
+            if node.rightChild == None:
                 return node.value
-            return self.min(node.leftChild)
+            return self.max(node.rightChild)
             
     def prior(self,node):
         if node.leftChild:
@@ -135,8 +178,8 @@ if __name__ == "__main__":
     print 'Find node with value 8: {0} (True)'.format(tree.find(8))
     print 'Max node in a subtree 4: {0} (5)'.format(tree.max(tree.select(4)))
     print 'Min node in a subtree 8: {0} (7.5)'.format(tree.min(tree.select(8)))
-    print 'Max node in tree: {0} (1)'.format(tree.max())
-    print 'Min node in tree: {0} (8)'.format(tree.min())
+    print 'Max node in tree: {0} (8)'.format(tree.max())
+    print 'Min node in tree: {0} (1)'.format(tree.min())
     print 'Successor of 5: {0} (7)'.format(tree.next(tree.select(5)))
     print 'Successor of 7: {0} (7.5)'.format(tree.next(tree.select(7)))
     print 'Successor of 4: {0} (5)'.format(tree.next(tree.select(4)))
@@ -146,5 +189,5 @@ if __name__ == "__main__":
     print 'Predecessor of 5: {0} (4)'.format(tree.prior(tree.select(5)))
     print 'Predecessor of 7.5: {0} (7)'.format(tree.prior(tree.select(7.5)))
     print time.clock() - start
-    #min/max argument is optional now
-    #find/select no longer need a node argument
+    print tree.max()
+    unittest.main()
