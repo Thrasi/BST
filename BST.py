@@ -24,37 +24,54 @@ class unbalancedBST():
         else:
             pass
         
+    def find(self,target):
+        return self.contains(self.root,target)    
         
-    def find(self,node,target):
+    def contains(self,node,target):
         if node == None:
             return False  
         if node.value < target:
-            return self.find(node.rightChild,target)
+            return self.contains(node.rightChild,target)
         elif node.value > target:
-            return self.find(node.leftChild,target)
+            return self.contains(node.leftChild,target)
         else:
             return True
+            
+    def select(self,target):
+        return self.getNode(self.root,target)
         
-    def select(self,node,target):
+    def getNode(self,node,target):
         if node == None:
             return None
         if node.value < target:
-            return self.select(node.rightChild,target)
+            return self.getNode(node.rightChild,target)
         elif node.value > target:
-            return self.select(node.leftChild,target)
+            return self.getNode(node.leftChild,target)
         else:
             return node
         
-    def min(self,node):
-        if node.leftChild == None:
-            return node.value
-        return self.min(node.leftChild)
+    def min(self,node=None):
+        if node:
+            if node.leftChild == None:
+                return node.value
+            return self.min(node.leftChild)
+        else:
+            node = self.root
+            if node.leftChild == None:
+                return node.value
+            return self.min(node.leftChild)
         
-    def max(self,node):
-        if node.rightChild == None:
-            return node.value
-        return self.max(node.rightChild)
-        
+    def max(self,node=None):
+        if node:
+            if node.rightChild == None:
+                return node.value
+            return self.max(node.rightChild)
+        else:
+            node = self.root
+            if node.leftChild == None:
+                return node.value
+            return self.min(node.leftChild)
+            
     def prior(self,node):
         if node.leftChild:
             return self.max(node.leftChild)
@@ -106,7 +123,6 @@ if __name__ == "__main__":
     
     tree=unbalancedBST(7)
     start = time.clock()
-    print 'XXX'
     root = tree.root
     tree.insert(root,4)
     tree.insert(root,1)
@@ -115,16 +131,20 @@ if __name__ == "__main__":
     tree.insert(root,7.5)
     print 'Nodes in tree in order:'
     tree.printTree(root)
-    print 'Find node with value 2: {0}'.format(tree.find(root,2))
-    print 'Find node with value 8: {0}'.format(tree.find(root,8))
-    print 'Max node in tree: {0}'.format(tree.max(root))
-    print 'Min node in tree: {0}'.format(tree.min(root))
-    print 'Successor of 5: {0}'.format(tree.next(tree.select(root,5)))
-    print 'Successor of 7: {0}'.format(tree.next(tree.select(root,7)))
-    print 'Successor of 4: {0}'.format(tree.next(tree.select(root,4)))
-    print 'Successor of 8: {0}'.format(tree.next(tree.select(root,8)))
-    print 'Predecessor of 1: {0}'.format(tree.prior(tree.select(root,1)))
-    print 'Predecessor of 4: {0}'.format(tree.prior(tree.select(root,4)))
-    print 'Predecessor of 5: {0}'.format(tree.prior(tree.select(root,5)))
-    print 'Predecessor of 7.5: {0}'.format(tree.prior(tree.select(root,7.5)))
+    print 'Find node with value 2: {0} (False)'.format(tree.find(2))
+    print 'Find node with value 8: {0} (True)'.format(tree.find(8))
+    print 'Max node in a subtree 4: {0} (5)'.format(tree.max(tree.select(4)))
+    print 'Min node in a subtree 8: {0} (7.5)'.format(tree.min(tree.select(8)))
+    print 'Max node in tree: {0} (1)'.format(tree.max())
+    print 'Min node in tree: {0} (8)'.format(tree.min())
+    print 'Successor of 5: {0} (7)'.format(tree.next(tree.select(5)))
+    print 'Successor of 7: {0} (7.5)'.format(tree.next(tree.select(7)))
+    print 'Successor of 4: {0} (5)'.format(tree.next(tree.select(4)))
+    print 'Successor of 8: {0} (None)'.format(tree.next(tree.select(8)))
+    print 'Predecessor of 1: {0} (None)'.format(tree.prior(tree.select(1)))
+    print 'Predecessor of 4: {0} (1)'.format(tree.prior(tree.select(4)))
+    print 'Predecessor of 5: {0} (4)'.format(tree.prior(tree.select(5)))
+    print 'Predecessor of 7.5: {0} (7)'.format(tree.prior(tree.select(7.5)))
     print time.clock() - start
+    #min/max argument is optional now
+    #find/select no longer need a node argument
