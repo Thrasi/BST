@@ -1,5 +1,6 @@
 import time
 from nodes import BinaryTreeNode as Node
+import nodes
         
 class BSTunbalanced():
     """An instance of the BSTunbalanced contains a root of a tree"""
@@ -140,15 +141,40 @@ class BSTunbalanced():
         else:
             return None
             
-    def delete(self,root,node):
-        pass
+    def delete(self,node):
+        """Currently this can't handle the deletion of a root node."""
+        check = type(node)
+        if check==int or check==float:
+            node = self.select(node)
+        parent = node.parent
+        if node.rightChild and node.leftChild:
+            predecessor = self.priorNode(node)
+            nodes.nodeSwap(node,predecessor)
+            self.delete(predecessor)
+            
+        elif node.rightChild:
+            if parent.value > node.value:
+                node.parent.leftChild = node.rightChild
+            else:
+                node.parent.rightChild = node.rightChild
+        elif node.leftChild:
+            if parent.value > node.value:
+                node.parent.leftChild = node.leftChild
+            else:
+                node.parent.rightChild = node.leftChild
+        else:
+            if parent.value < node.value:
+                node.parent.leftChild = None
+            else:
+                node.parent.rightChild = None
         
-    def printTree(self,node):
+    def printTree(self,node=None):
         if node == None:
             return
         self.printTree(node.leftChild)
         print node.value
         self.printTree(node.rightChild)
+        
         
 if __name__ == "__main__":
     
@@ -176,6 +202,11 @@ if __name__ == "__main__":
     print 'Predecessor of 4: {0} (1)'.format(tree.prior(4))
     print 'Predecessor of 5: {0} (4)'.format(tree.prior(5))
     print 'Predecessor of 7.5: {0} (7)'.format(tree.prior(7.5))
+    tree.printTree(root)
+    tree.delete(7)
+    print 'Tree'
+    tree.printTree(root)
+    print 'Tree ends'
     print time.clock() - start
     print tree.max()
     

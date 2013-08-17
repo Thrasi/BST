@@ -13,3 +13,8 @@ class BinaryTreeNode:
         if self.rightChild != None:
             children.append(self.rightChild)
         return children
+        
+        
+def nodeSwap(node1,node2):
+    """Swaps node1 and node2"""
+    node1.value, node2.value = node2.value, node1.value
