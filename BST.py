@@ -13,7 +13,7 @@ class BSTunbalanced():
     def find(self,target):
         return self.contains(self.root,target)    
         
-    def contains(self,node,target):
+    def contains(self,node,target):#sdfg
         if node == None:
             return False  
         if node.value < target:
@@ -122,35 +122,36 @@ class BSTunbalanced():
                 return parent
             parent = parent.parent
             
-    def insert(self,root,value):
-        """Excludes duplicate values"""
-        if root == None: #Does this ever happen?
-            return Node(value)
-        if root.value < value:
-            if root.rightChild:
-                self.insert(root.rightChild,value)
+    def insert(self,value,subNode=None):
+        if subNode == None:
+            subNode = self.root
+        if subNode.value < value:
+            if subNode.rightChild:
+                self.insert(value,subNode.rightChild)
             else:
-                root.rightChild = Node(value)
-                root.rightChild.parent = root
-        elif root.value > value:
-            if root.leftChild:
-                self.insert(root.leftChild,value)
+                subNode.rightChild = Node(value)
+                subNode.rightChild.parent = subNode
+        elif subNode.value > value:
+            if subNode.leftChild:
+                self.insert(value,subNode.leftChild)
             else:
-                root.leftChild = Node(value)
-                root.leftChild.parent = root
+                subNode.leftChild = Node(value)
+                subNode.leftChild.parent = subNode
         else:
             return None
-            
+        
     def delete(self,node):
         """Currently this can't handle the deletion of a root node."""
         check = type(node)
         if check==int or check==float:
             node = self.select(node)
         parent = node.parent
+            
         if node.rightChild and node.leftChild:
             predecessor = self.priorNode(node)
-            nodes.nodeSwap(node,predecessor)
+            tempValue = predecessor.value
             self.delete(predecessor)
+            node.value = tempValue
             
         elif node.rightChild:
             if parent.value > node.value:
@@ -163,10 +164,18 @@ class BSTunbalanced():
             else:
                 node.parent.rightChild = node.leftChild
         else:
-            if parent.value < node.value:
+            if parent.value > node.value:
                 node.parent.leftChild = None
             else:
                 node.parent.rightChild = None
+    # self.replaceNodeWith(node,None)
+    # self.replaceNodeWith(node.leftChild)
+    # self.replaceNodeWith(node.rightChild)
+    def replaceNodeWith(self,node,child):
+        if node.parent.value > node.value:
+            node.parent.leftChild = child
+        else:
+            node.parent.rightChild = child
         
     def printTree(self,node=None):
         if node == None:
@@ -181,11 +190,12 @@ if __name__ == "__main__":
     tree=BSTunbalanced(7)
     start = time.clock()
     root = tree.root
-    tree.insert(root,4)
-    tree.insert(root,1)
-    tree.insert(root,5)
-    tree.insert(root,8)
-    tree.insert(root,7.5)
+    tree.insert(4)
+    tree.insert(1)
+    tree.insert(5)
+    tree.insert(8)
+    tree.insert(7.5)
+    tree.insert(6)
     print 'Nodes in tree in order:'
     tree.printTree(root)
     print 'Find node with value 2: {0} (False)'.format(tree.find(2))
@@ -207,6 +217,6 @@ if __name__ == "__main__":
     print 'Tree'
     tree.printTree(root)
     print 'Tree ends'
-    print time.clock() - start
-    print tree.max()
+    print time.clock() - start#dsf
+    print tree.root.value
     
