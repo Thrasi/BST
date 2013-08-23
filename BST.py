@@ -313,9 +313,6 @@ class BST():
                 while not nextLvl.empty():
                     currentLvl.put(nextLvl.get())
         
-class AVLTree(BST):
-    pass
-        
 if __name__ == "__main__":
     
     tree = BST(7)
